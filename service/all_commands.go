@@ -75,6 +75,9 @@ func (s *allCommandsService) Delete(key string) string {
 }
 
 func MapConctenation(a map[string]string, b map[string]string) map[string]string {
+	if a == nil {
+		a = map[string]string{}
+	}
 	for k := range b {
 		a[k] = b[k]
 	}
