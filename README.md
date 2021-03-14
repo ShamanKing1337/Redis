@@ -31,17 +31,17 @@ API принимает данные в формате JSON и возвращае
 В случае успешного запроса возвращается статус-200, при ошибке-400, а при использовании другого метода-405.
 На каждый ключ можно установить ttl в теле запроса, если не передать значение ttl то по умолчанию поставится значение -1.
 При отправке каждого запроса нужно задавать BasicAuth и передавать логин и пароль(admin,admin).
-Сохранение производится в текстовый файл в этой же дирректории.
+Для сохранения нужно отправить запрост /SAVE.Сохранение производится в текстовый файл в этой же дирректории.
 
 ### Операторы:
 
-| Оператор                | Метод | Url          | Body                                                         | Пример успешного ответаa                                                                                                                    |
+| Оператор                | Метод | Url          | Body                                                         | Пример успешного ответа                                                                                                                    |
 |-----------------------|--------|--------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| GET                  | GET    | /GET/{key}            | --                                                           | ["string","map","my_key"]                                                               | --                                                               |
-| SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | {"type": 1,"data": [1,"string",{"map": "of_something"},0.2,null,["nested","list",42,]]}                                      |
-| Get at index          | GET    | /key/index   | --                                                           | {"inner": {"one_more": {"key": "value"}}}                                                                             |
-| Remove                | DELETE | /key         | --                                                           | "OK"                                                                                    | --                                                               |
-| Set с ttl по умолчнию | POST   | /key         | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}          |
-| Set с ttl             | POST   | /key?ttl=10s | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}                                     |
+| GET                  | GET    | /GET/{key}            | --                                                           | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b] ValueS:string ttl:-1}                                                            | --                                                               |
+| SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | Resp: OK                                  |
+| DEL          | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
+| KEYS               | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
+| SET with ttl| POST   | /key         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
+| APPEND          | POST | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
 
 
