@@ -35,12 +35,13 @@ API принимает данные в формате JSON и возвращае
 
 ### Операторы:
 
-| Оператор                | Метод | Url          | Body                                                         | Пример успешного ответаa                                                                | Пример ошибки                                                    |
-|-----------------------|--------|--------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| Оператор                | Метод | Url          | Body                                                         | Пример успешного ответаa                                                                                                                    |
+|-----------------------|--------|--------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
 | GET                  | GET    | /GET/{key}            | --                                                           | ["string","map","my_key"]                                                               | --                                                               |
-| SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | {"type": 1,"data": [1,"string",{"map": "of_something"},0.2,null,["nested","list",42,]]} | {"error": "key not found"}                                       |
-| Get at index          | GET    | /key/index   | --                                                           | {"inner": {"one_more": {"key": "value"}}}                                               | {"error": "cant get item at index"}                              |
+| SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | {"type": 1,"data": [1,"string",{"map": "of_something"},0.2,null,["nested","list",42,]]}                                      |
+| Get at index          | GET    | /key/index   | --                                                           | {"inner": {"one_more": {"key": "value"}}}                                                                             |
 | Remove                | DELETE | /key         | --                                                           | "OK"                                                                                    | --                                                               |
-| Set с ttl по умолчнию | POST   | /key         | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}          | {"error":"invalid character 'a' looking for beginning of value"} |
-| Set с ttl             | POST   | /key?ttl=10s | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}          | {"error":"Malformed duration"}                                   |
+| Set с ttl по умолчнию | POST   | /key         | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}          |
+| Set с ttl             | POST   | /key?ttl=10s | {"a":42,"list":[1,{"hello":"world"}],"something":"anything"} | {"type":2,"data":{"a":42,"list":[1,{"hello":"world"}],"something":"anything"}}                                     |
+
 
