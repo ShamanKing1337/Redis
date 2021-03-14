@@ -41,7 +41,7 @@ API принимает данные в формате JSON и возвращае
 | SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | Resp: OK                                  |
 | DEL          | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
 | KEYS               | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
-| SET with ttl| POST   | /key         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
+| SET with ttl| PUT   | /key         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
 | APPEND          | POST | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
 
 
