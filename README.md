@@ -48,7 +48,7 @@ API принимает данные в формате JSON и возвращае
 | Удаляет ключ и все значения         | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
 | Возвращает все ключи хранилища              | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
 | Добавляет данные по существующему ключу          | PUT | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
-
+|Доавление в отдельное хранилище словарей  | POST | /HSET | {"key":"key5","value":{"KeyDict":"dsd","ValueDict" : "dd"}} |  Resp: OK  |
 
 ## Тестирование
 
