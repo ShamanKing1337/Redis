@@ -91,7 +91,12 @@ func ListConctenation(a []string, b []string) []string {
 func (s *allCommandsService) Append(req RequestAll) string {
 	s.mutex.Lock()
 
-	s.data[req.Key] = &Ttl{ValueS: s.data[req.Key].ValueS, ValueL: ListConctenation(s.data[req.Key].ValueL, req.ValueL), ValueD: MapConctenation(s.data[req.Key].ValueD, req.ValueD), ttl: s.data[req.Key].ttl}
+	if s.data[req.Key] == nil {
+		s.mutex.Unlock()
+		return "Key Not Exist"
+	}
+
+	s.data[req.Key] = &Ttl{ValueS: req.ValueS, ValueL: ListConctenation(s.data[req.Key].ValueL, req.ValueL), ValueD: MapConctenation(s.data[req.Key].ValueD, req.ValueD), ttl: s.data[req.Key].ttl}
 
 	s.mutex.Unlock()
 	return "OK"
