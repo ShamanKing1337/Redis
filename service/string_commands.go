@@ -10,29 +10,26 @@ import (
 
 type StringCommandsService interface {
 	Get(key string) string
-	Set(key string, value string, ttl int64)
+	Set(key string, value string, ttl int64) string
 	Delete(key string) string
 	Keys() []string
 	Check()
 	Save()
 }
 
-
-
-type TtlStr struct{
+type TtlStr struct {
 	value string
-	ttl int64
+	ttl   int64
 }
 
 type stringCommandsService struct {
-	data map[string]*TtlStr
+	data  map[string]*TtlStr
 	mutex sync.Mutex
 }
 
-
 func (s *stringCommandsService) Get(key string) string {
 	s.mutex.Lock()
-	tmp,ok := s.data[key]
+	tmp, ok := s.data[key]
 	s.mutex.Unlock()
 	if ok {
 		return tmp.value
@@ -42,27 +39,23 @@ func (s *stringCommandsService) Get(key string) string {
 
 }
 
-func (s *stringCommandsService) Set(key string, value string, ttl int64)  {
+func (s *stringCommandsService) Set(key string, value string, ttl int64) string {
 	s.mutex.Lock()
-	if ttl > 0{
-		s.data[key] = &TtlStr{value: value, ttl:time.Now().Add(time.Second * time.Duration(ttl)).Unix()}
-	}else{
-		s.data[key] = &TtlStr{value: value, ttl:-1}
+	if ttl > 0 {
+		s.data[key] = &TtlStr{value: value, ttl: time.Now().Add(time.Second * time.Duration(ttl)).Unix()}
+	} else {
+		s.data[key] = &TtlStr{value: value, ttl: -1}
 	}
 	s.mutex.Unlock()
+	return "OK"
 }
 
-func (s *stringCommandsService) Delete(key string)  string{
+func (s *stringCommandsService) Delete(key string) string {
 	s.mutex.Lock()
 	delete(s.data, key)
 	s.mutex.Unlock()
 	return "OK"
 }
-
-
-
-
-
 
 func (s *stringCommandsService) Keys() []string {
 	var tmp = []string{}
@@ -74,13 +67,11 @@ func (s *stringCommandsService) Keys() []string {
 	return tmp
 }
 
+func (s *stringCommandsService) Check() {
 
-
-func (s *stringCommandsService)Check(){
-
-	for{
+	for {
 		for k := range s.data {
-			if(s.data[k].ttl <=  time.Now().Unix() && s.data[k].ttl != -1){
+			if s.data[k].ttl <= time.Now().Unix() && s.data[k].ttl != -1 {
 				fmt.Println("delete: ", k)
 				delete(s.data, k)
 			}
@@ -90,11 +81,7 @@ func (s *stringCommandsService)Check(){
 	}
 }
 
-
-
-
-
-func (s *stringCommandsService) Save()  {
+func (s *stringCommandsService) Save() {
 	tmp := make(map[string]TtlStr)
 	s.mutex.Lock()
 	for k := range s.data {
@@ -108,17 +95,15 @@ func (s *stringCommandsService) Save()  {
 	}
 	defer fo.Close()
 	for k := range s.data {
-		fo.WriteString(k + ": " + tmp[k].value + ", " + strconv.FormatInt(tmp[k].ttl,10) + "\n")
+		fo.WriteString(k + ": " + tmp[k].value + ", " + strconv.FormatInt(tmp[k].ttl, 10) + "\n")
 	}
 
-
 }
-
 
 func NewStringCommandsService() StringCommandsService {
 	return &stringCommandsService{data: make(map[string]*TtlStr)}
 }
 
 func NewMockStringCommandsService() StringCommandsService {
-	return &stringCommandsService{data: map[string]*TtlStr{"key1":{"value1",time.Now().Add(time.Second * 20).Unix() }, "key2":{"value2",time.Now().Add(time.Minute * 3).Unix() }, "key3":{"value3",time.Now().Add(time.Minute * 6).Unix() }}}
+	return &stringCommandsService{data: map[string]*TtlStr{"key1": {"value1", time.Now().Add(time.Second * 20).Unix()}, "key2": {"value2", time.Now().Add(time.Minute * 3).Unix()}, "key3": {"value3", time.Now().Add(time.Minute * 6).Unix()}}}
 }

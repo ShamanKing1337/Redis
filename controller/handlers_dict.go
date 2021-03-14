@@ -1,4 +1,3 @@
-
 package controller
 
 import (
@@ -7,11 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 )
-
-
 
 type DictCommandsImplementation interface {
 	GetDict(w http.ResponseWriter, r *http.Request)
@@ -21,97 +17,92 @@ type DictCommandsImplementation interface {
 	SaveDict(w http.ResponseWriter, r *http.Request)
 }
 
-
-
-
-type RequestDict struct{
-	Key string
+type RequestDict struct {
+	Key   string
 	Value service.Dict
-	Ttl int64
+	Ttl   int64
 }
 
 type dictCommandsImplementation struct {
 	service service.DictCommandsService
 }
 
-func NewDictCommandsImplementation(service service.DictCommandsService) DictCommandsImplementation{
+func NewDictCommandsImplementation(service service.DictCommandsService) DictCommandsImplementation {
 	return &dictCommandsImplementation{service: service}
 }
 
+func (s dictCommandsImplementation) SetDict(w http.ResponseWriter, r *http.Request) {
 
-
-
-
-func(s dictCommandsImplementation) SetDict(w http.ResponseWriter, r *http.Request){
-
-	if remain.CheckMethod("PUT",r){
+	if remain.CheckMethod("POST", r) {
 		var req RequestDict
 		err1 := json.NewDecoder(r.Body).Decode(&req)
 		if err1 != nil {
-			panic(err1)
+			w.WriteHeader(400)
 		}
-		fmt.Println(req.Value)
-		s.service.Set(req.Key, service.Dict(req.Value), req.Ttl)
-	} else{
+		resp := s.service.Set(req.Key, service.Dict(req.Value), req.Ttl)
+		fmt.Fprintf(w, "Resp: %+v", resp)
+	} else {
 		w.WriteHeader(405)
 	}
 
-
 }
 
-func(s *dictCommandsImplementation) SaveDict(w http.ResponseWriter, r *http.Request){
+func (s *dictCommandsImplementation) SaveDict(w http.ResponseWriter, r *http.Request) {
 
 	s.service.Save()
 
 }
 
-
-
-
-
-
-
-func(s *dictCommandsImplementation) GetDict(w http.ResponseWriter, r *http.Request){
-	if remain.CheckMethod("GET",r){
-		fmt.Println(url.Parse(fmt.Sprint(r.URL)))
+func (s *dictCommandsImplementation) GetDict(w http.ResponseWriter, r *http.Request) {
+	if remain.CheckMethod("GET", r) {
 		str := strings.Split(fmt.Sprint(r.URL), "B")
+		if len(str) != 2 {
+			w.WriteHeader(400)
+			return
+		}
 		str1 := strings.Split(str[1], "%")
-
+		if len(str1) != 2 {
+			w.WriteHeader(400)
+			return
+		}
 
 		res := s.service.Get(str1[0])
-		if (len(res)!= 0){
+		if len(res) != 0 {
 			fmt.Fprintf(w, "Resp: %+v", res)
 		} else {
 			fmt.Fprintf(w, "Not Exist")
 		}
-	} else{
+	} else {
 		w.WriteHeader(405)
 	}
 }
 
-
-func(s *dictCommandsImplementation) DeleteKey(w http.ResponseWriter, r *http.Request){
-	if remain.CheckMethod("DELETE",r){
-		fmt.Println(url.Parse(fmt.Sprint(r.URL)))
+func (s *dictCommandsImplementation) DeleteKey(w http.ResponseWriter, r *http.Request) {
+	if remain.CheckMethod("DELETE", r) {
 		str := strings.Split(fmt.Sprint(r.URL), "B")
+		if len(str) != 2 {
+			w.WriteHeader(400)
+			return
+		}
 		str1 := strings.Split(str[1], "%")
+		if len(str1) != 2 {
+			w.WriteHeader(400)
+			return
+		}
 		resp := s.service.Delete(str1[0])
 
-
 		fmt.Fprintf(w, "Resp: %+v", resp)
-	} else{
+	} else {
 		w.WriteHeader(405)
 	}
 }
 
-
-func(s *dictCommandsImplementation) GetKeys(w http.ResponseWriter, r *http.Request){
-	if remain.CheckMethod("GET",r){
+func (s *dictCommandsImplementation) GetKeys(w http.ResponseWriter, r *http.Request) {
+	if remain.CheckMethod("GET", r) {
 		tmp := s.service.Keys()
 
 		fmt.Fprintf(w, "Resp: %+v", tmp)
-	} else{
+	} else {
 		w.WriteHeader(405)
 	}
 }
-

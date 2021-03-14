@@ -13,69 +13,67 @@ import (
 
 type DictCommandsService interface {
 	Get(key string) map[string]string
-	Set(key string, value Dict, ttl int64)
+	Set(key string, value Dict, ttl int64) string
 	Delete(key string) string
 	Keys() []string
 	Check()
 	Save()
 }
 
-type Dict struct{
-	KeyDict string
+type Dict struct {
+	KeyDict   string
 	ValueDict string
 }
 
-
-type TtlDict struct{
+type TtlDict struct {
 	value map[string]string
-	ttl int64
+	ttl   int64
 }
 
 type dictCommandsService struct {
-	data map[string]*TtlDict
+	data  map[string]*TtlDict
 	mutex sync.Mutex
 }
 
-
 func (s *dictCommandsService) Get(key string) map[string]string {
 	s.mutex.Lock()
-	tmp,ok := s.data[key]
+	tmp, ok := s.data[key]
 	s.mutex.Unlock()
 	if ok {
 		return tmp.value
 	} else {
-		return map[string]string{"nil" : "nil"}
+		return map[string]string{"nil": "nil"}
 	}
 
 }
 
-func (s *dictCommandsService) Set(key string, value Dict, ttl int64)  {
+func (s *dictCommandsService) Set(key string, value Dict, ttl int64) string {
 	s.mutex.Lock()
+
+	if s.data[key] == nil {
+		s.data[key] = &TtlDict{}
+		s.data[key].value = map[string]string{}
+	}
 
 	tmp := s.data[key].value
 
 	tmp[value.KeyDict] = value.ValueDict
 
-	//nil pointer?
-	if ttl > 0{
-		s.data[key] = &TtlDict{value: tmp, ttl:time.Now().Add(time.Second * time.Duration(ttl)).Unix()}
-	}else{
-		s.data[key] = &TtlDict{value: tmp, ttl:-1}
+	if ttl > 0 {
+		s.data[key] = &TtlDict{value: tmp, ttl: time.Now().Add(time.Second * time.Duration(ttl)).Unix()}
+	} else {
+		s.data[key] = &TtlDict{value: tmp, ttl: -1}
 	}
 	s.mutex.Unlock()
+	return "OK"
 }
 
-func (s *dictCommandsService) Delete(key string)  string{
+func (s *dictCommandsService) Delete(key string) string {
 	s.mutex.Lock()
 	delete(s.data, key)
 	s.mutex.Unlock()
 	return "OK"
 }
-
-
-
-
-
 
 func (s *dictCommandsService) Keys() []string {
 	var tmp = []string{}
@@ -87,13 +85,11 @@ func (s *dictCommandsService) Keys() []string {
 	return tmp
 }
 
+func (s *dictCommandsService) Check() {
 
-
-func (s *dictCommandsService)Check(){
-
-	for{
+	for {
 		for k := range s.data {
-			if(s.data[k].ttl <=  time.Now().Unix() && s.data[k].ttl != -1){
+			if s.data[k].ttl <= time.Now().Unix() && s.data[k].ttl != -1 {
 				fmt.Println("delete: ", k)
 				delete(s.data, k)
 			}
@@ -102,10 +98,6 @@ func (s *dictCommandsService)Check(){
 		time.Sleep(1 * time.Second)
 	}
 }
-
-
-
-
 
 func (s *dictCommandsService) Save() {
 	tmp := make(map[string]TtlDict)
@@ -132,13 +124,10 @@ func (s *dictCommandsService) Save() {
 	}
 }
 
-
-
-
 func NewDictCommandsService() DictCommandsService {
 	return &dictCommandsService{data: make(map[string]*TtlDict)}
 }
 
 func NewMockDictCommandsService() DictCommandsService {
-	return &dictCommandsService{data: map[string]*TtlDict{"key1":{map[string]string{"value1": "dsad"},time.Now().Add(time.Second * 20).Unix() }, "key2":{map[string]string{"value2": "dsadasdsad"},time.Now().Add(time.Minute * 3).Unix() }, "key3":{map[string]string{"value3": "1111111", "value2" : "jjj"},time.Now().Add(time.Minute * 6).Unix() }}}
+	return &dictCommandsService{data: map[string]*TtlDict{"key1": {map[string]string{"value1": "dsad"}, time.Now().Add(time.Second * 20).Unix()}, "key2": {map[string]string{"value2": "dsadasdsad"}, time.Now().Add(time.Minute * 3).Unix()}, "key3": {map[string]string{"value3": "1111111", "value2": "jjj"}, time.Now().Add(time.Minute * 6).Unix()}}}
 }
