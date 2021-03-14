@@ -44,10 +44,9 @@ API принимает данные в формате JSON и возвращае
 | Описание               | Метод | Url          | Body                                                         | Пример успешного ответа                                                                                                                    |
 |-----------------------|--------|--------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
 | Достает значения по ключу                  | GET    | /GET/{key}            | --                                                           | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b] ValueS:string ttl:-1}                                                            | --                                                               |
-| Задает значения по ключу                  | POST    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | Resp: OK                                  |
+| Задает значения по ключу                  | POST    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}, "ttl" : 20}                                                          | Resp: OK                                  |
 | Удаляет ключ и все значения         | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
 | Возвращает все ключи хранилища              | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
-| Задачет значения по ключу с временем жизни| POST   | /SET         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
 | Добавляет данные по существующему ключу          | PUT | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
 
 
