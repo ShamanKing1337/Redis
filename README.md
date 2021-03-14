@@ -41,14 +41,14 @@ API принимает данные в формате JSON и возвращае
 
 ### Операторы:
 
-| Оператор                | Метод | Url          | Body                                                         | Пример успешного ответа                                                                                                                    |
+| Описание               | Метод | Url          | Body                                                         | Пример успешного ответа                                                                                                                    |
 |-----------------------|--------|--------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| GET                  | GET    | /GET/{key}            | --                                                           | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b] ValueS:string ttl:-1}                                                            | --                                                               |
-| SET                   | PUT    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | Resp: OK                                  |
-| DEL          | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
-| KEYS               | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
-| SET with ttl| PUT   | /key         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
-| APPEND          | POST | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
+| Достает значения по ключу                  | GET    | /GET/{key}            | --                                                           | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b] ValueS:string ttl:-1}                                                            | --                                                               |
+| Задает значения по ключу                  | POST    | /SET         | {"key":"key1","valueS":"string","valueL":["a","b"],"valueD":{"key1":"value1","key2":"value2"}}                                                          | Resp: OK                                  |
+| Удаляет ключ и все значения         | DELETE    | /DEL/{key}  | --                                                           | Resp: OK                                                                            |
+| Возвращает все ключи хранилища              | GET | /KEYS         | --                                                           | Resp: [key3 key5]                                                                                   | --                                                               |
+| Задачет значения по ключу с временем жизни| POST   | /SET         | {"key":"key6","valueS":"string","ttl" : 20} |     Resp: OK       |
+| Добавляет данные по существующему ключу          | PUT | /APPEND| {"key":"key6","valueL":["b","e"]}  | Resp: &{ValueD:map[key1:value1 key2:value2] ValueL:[a b b e] ValueS:string ttl:-1}                                     |
 
 
 ## Тестирование
